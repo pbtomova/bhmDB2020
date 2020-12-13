@@ -19,5 +19,5 @@ directories:
 deploy:
   provider: heroku
   api_key: 041a7f57-6f61-4d6c-a220-89d903d51eb7
-  app: popododo8383
+  app: bhmdb2020
   skip_cleanup: true
