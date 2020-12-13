@@ -35,7 +35,7 @@ public class FirstServlet extends HttpServlet {
 
         //Set up the response
         resp.setContentType("text/html");
-        // Get a output writer to write the response message into the network socket in html
+        // Get a output writer to write the response messages into the network socket in html
         //TODO Change to an output stream that can be received by the android app
         PrintWriter out=resp.getWriter();
         out.println("<html>");
