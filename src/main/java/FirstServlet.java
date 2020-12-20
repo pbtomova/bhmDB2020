@@ -14,10 +14,9 @@ public class FirstServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        //Set up a connection with the PostgreSQL database
-        //TODO update before deploying on Heroku
-        String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
-        try { // Registers the driver
+        //Set up a connection with the PostgreSQL database on Heroku
+        String dbUrl = "jdbc:postgresql://ec2-54-75-199-252.eu-west-1.compute.amazonaws.com:5432/dasvo1tthb1a3g?password=22afccca3ddb51486bab2f43f044a0591f489bb18df77ac691835d453b24c9e9&sslmode=require&user=kbowqnjbtonlye";
+        try { // Register the driver
             Class.forName("org.postgresql.Driver");
         }
         catch (Exception e) {
@@ -27,7 +26,7 @@ public class FirstServlet extends HttpServlet {
 
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection(dbUrl, "postgres", "151920");
+            conn = DriverManager.getConnection(dbUrl);
         } catch (SQLException throwables) {
             System.out.println("Error in opening the connection");
             throwables.printStackTrace();
@@ -46,7 +45,7 @@ public class FirstServlet extends HttpServlet {
             Statement s=conn.createStatement();
             String sqlStr = "SELECT hospID,name,gender,dob FROM patients;";
             ResultSet rset=s.executeQuery(sqlStr);
-            out.println("<p>"+"hospID<t>"+"Name"+"Gender"+"Date of Birth+</p>");
+            out.println("<p>"+"hospID"+"  "+"Name"+"  "+"Gender"+"  "+"Date of Birth+</p>");
             while(rset.next()){
                 out.println("<p>"+rset.getInt("hospID")+", "+ rset.getString("name")+", "+ rset.getString("gender")+", "+rset.getDate("dob")+"</p>");
             }
