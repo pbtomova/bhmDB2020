@@ -29,35 +29,42 @@ public class StartupServlet extends HttpServlet {
         resp.setContentType("application/JSON");
         // Get an OutputStream to send the response messages into the network socket in html
         OutputStream os=resp.getOutputStream();
+
         //Send all patients using JSON format
-
-
         try {
             Statement s = conn.createStatement();
             String sqlStr = "SELECT name,hospID,gender,dob FROM patients;";
             ResultSet rset = s.executeQuery(sqlStr);
             while (rset.next()) {
-                Patient p = new Patient(rset.getString("name"));
-                p.setHospID(rset.getInt("hospID"));
-                p.setGender(rset.getString("gender"));
-                p.setDOB(rset.getDate("dob"));
-
-                //Convert to JSON
-                Gson gson = new Gson();
-                String jsonString = gson.toJson(p);
-                //Create the body of the response
-                String message = jsonString;
-                byte[] body = message.getBytes(StandardCharsets.UTF_8);
-                // Write the body of the request
+                //Create a Patient object and write its content in a JSON format
+                byte[] body = writeJsonBody(rset);
+                // Write the body of the response to the network socket
                 os.write(body, 0, body.length);
             }
             rset.close();
             os.close();
             s.close();
         } catch(SQLException e){
-            System.out.println("Error in SQL query or sending request");
+            System.out.println("Error in SQL query or sending response");
             e.printStackTrace();}
     }
+
+//    @org.jetbrains.annotations.NotNull
+    public byte[] writeJsonBody(ResultSet rset) throws SQLException {
+        Patient p = new Patient(rset.getString("name"));
+        p.setHospID(rset.getInt("hospID"));
+        p.setGender(rset.getString("gender"));
+        p.setDOB(rset.getDate("dob"));
+
+        //Convert to JSON
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(p);
+        //Create the body of the response
+        String message = jsonString;
+        byte[] body = message.getBytes(StandardCharsets.UTF_8);
+        return body;
+    }
+
 
     //@org.jetbrains.annotations.Nullable
     //Set up a connection with the PostgreSQL database on Heroku

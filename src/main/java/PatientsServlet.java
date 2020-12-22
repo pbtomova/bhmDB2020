@@ -13,4 +13,5 @@ public class PatientsServlet extends HttpServlet {
         resp.setContentType("text/html");
         resp.getWriter().write("<b>Heyo!</b>");
     }
+    StartupServlet ss=new StartupServlet();
 }
