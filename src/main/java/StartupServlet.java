@@ -27,7 +27,6 @@ public class StartupServlet extends HttpServlet {
         Connection conn = getConnectionPostgreSQL();
 
         //Set up the response
-
         resp.setContentType("application/JSON");
         // Get an OutputStream to send the response messages into the network socket in html
         OutputStream os=resp.getOutputStream();
