@@ -9,18 +9,20 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
+import java.util.logging.Logger;
 
-//TODO Refactor for unit testing
-//TODO Add logs
+
 //TODO Change all System.out.println to something meaningful for the android app
 
 
 //Servlet to request patients list
 @WebServlet(urlPatterns = {"/startup"},loadOnStartup = 1)
 public class StartupServlet extends HttpServlet {
+    private static final Logger log= Logger.getLogger(Patient.class.getName());
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        log.info("Get request received");
         //Set up a connection with the PostgreSQL database on Heroku
         Connection conn = getConnectionPostgreSQL();
 
@@ -44,8 +46,10 @@ public class StartupServlet extends HttpServlet {
             rset.close();
             os.close();
             s.close();
+            log.info("Get response sent");
         } catch(SQLException e){
             System.out.println("Error in SQL query or sending response");
+            log.warning("Error in SQL query or sending response");
             e.printStackTrace();}
     }
 
@@ -82,6 +86,7 @@ public class StartupServlet extends HttpServlet {
             System.out.println("Error in opening the connection");
             throwables.printStackTrace();
         }
+        log.info("Connection successfully opened");
         return conn;
     }
 }
