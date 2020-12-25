@@ -39,7 +39,7 @@ public class StartupServlet extends HttpServlet {
                 //Create a Patient object and write its content in a JSON format
                 byte[] body = writeJsonBody(rset);
                 // Write the body of the response to the network socket
-                os.write(body, 0, body.length);
+                os.write(body,0,body.length);
             }
             rset.close();
             os.close();
@@ -49,9 +49,9 @@ public class StartupServlet extends HttpServlet {
             e.printStackTrace();}
     }
 
-//    @org.jetbrains.annotations.NotNull
     public byte[] writeJsonBody(ResultSet rset) throws SQLException {
-        Patient p = new Patient(rset.getString("name"));
+        String name=rset.getString("name");
+        Patient p = new Patient(name);
         p.setHospID(rset.getInt("hospID"));
         p.setGender(rset.getString("gender"));
         p.setDOB(rset.getDate("dob"));
@@ -60,15 +60,12 @@ public class StartupServlet extends HttpServlet {
         Gson gson = new Gson();
         String jsonString = gson.toJson(p);
         //Create the body of the response
-        String message = jsonString;
-        byte[] body = message.getBytes(StandardCharsets.UTF_8);
+        byte[] body = jsonString.getBytes(StandardCharsets.UTF_8);
         return body;
     }
 
-
-    //@org.jetbrains.annotations.Nullable
     //Set up a connection with the PostgreSQL database on Heroku
-    private Connection getConnectionPostgreSQL() {
+    public Connection getConnectionPostgreSQL() {
         String dbUrl = "jdbc:postgresql://ec2-54-75-199-252.eu-west-1.compute.amazonaws.com:5432/dasvo1tthb1a3g?password=22afccca3ddb51486bab2f43f044a0591f489bb18df77ac691835d453b24c9e9&sslmode=require&user=kbowqnjbtonlye";
         try { // Register the driver
             Class.forName("org.postgresql.Driver");
