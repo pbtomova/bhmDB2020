@@ -8,7 +8,7 @@ public class Patient {
     // The following fields list patient's profile information
     private String name;
     private int hospID;
-    private Date DOB; // String for now, will figure out how to set it as a date
+    private Date DOB;
     private String timeOfBirth;
     private double weight;
     private String gender;

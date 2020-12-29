@@ -6,9 +6,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
+import java.io.PrintWriter;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 
@@ -26,49 +27,63 @@ public class StartupServlet extends HttpServlet {
         //Set up a connection with the PostgreSQL database on Heroku
         Connection conn = getConnectionPostgreSQL();
 
-        //Set up the response
-        resp.setContentType("application/JSON");
+        //Set up the response content
+        resp.setContentType("application/json");
         // Get an OutputStream to send the response messages into the network socket in html
-        OutputStream os=resp.getOutputStream();
+        PrintWriter printWriter=resp.getWriter();
 
         //Send all patients using JSON format
         try {
             Statement s = conn.createStatement();
+            //SQL query on the Database to retrieve information
             String sqlStr = "SELECT name,hospID,gender,dob FROM patients;";
             ResultSet rset = s.executeQuery(sqlStr);
-            while (rset.next()) {
-                //Create a Patient object and write its content in a JSON format
-                byte[] body = writeJsonBody(rset);
-                // Write the body of the response to the network socket
-                os.write(body,0,body.length);
-            }
+            // Square bracket denoting beginning of a Json Array
+            printWriter.write("[");
+            //Converted Patient objects into a Json string
+            String body = writeJsonBody(rset);
+            printWriter.write(body);
+            //End of Json array
+            printWriter.write("]");
+            printWriter.close();
             rset.close();
-            os.close();
             s.close();
-            log.info("Get response sent");
         } catch(SQLException e){
-            System.out.println("Error in SQL query or sending response");
             log.warning("Error in SQL query or sending response");
             e.printStackTrace();}
+        log.info("Get response sent");
     }
 
-    public byte[] writeJsonBody(ResultSet rset) throws SQLException {
+    public static String writeJsonBody(ResultSet rset) throws SQLException {
+
+        //Check number of Json objects about to be sent
+        StringBuffer stringBuffer=new StringBuffer();
+        List<String> patientsJson =new ArrayList<>();
+        String body; //the body of the response containing comma separated Json objects
+        while (rset.next()) {
+            //Create a Patient object and write its content in a JSON format
+            String patientJsonString = jsonConverter(rset);
+            patientsJson.add(patientJsonString);
+        }
+        body=String.join(",", patientsJson);
+        return body;
+    }
+
+    public static String jsonConverter(ResultSet rset) throws SQLException {
         String name=rset.getString("name");
         Patient p = new Patient(name);
         p.setHospID(rset.getInt("hospID"));
         p.setGender(rset.getString("gender"));
         p.setDOB(rset.getDate("dob"));
 
-        //Convert to JSON
+        //Convert to JSON and create the body of the response
         Gson gson = new Gson();
         String jsonString = gson.toJson(p);
-        //Create the body of the response
-        byte[] body = jsonString.getBytes(StandardCharsets.UTF_8);
-        return body;
+        return jsonString;
     }
 
-    //Set up a connection with the PostgreSQL database on Heroku
     public Connection getConnectionPostgreSQL() {
+        //Set up a connection with the PostgreSQL database on Heroku
         String dbUrl = "jdbc:postgresql://ec2-54-75-199-252.eu-west-1.compute.amazonaws.com:5432/dasvo1tthb1a3g?password=22afccca3ddb51486bab2f43f044a0591f489bb18df77ac691835d453b24c9e9&sslmode=require&user=kbowqnjbtonlye";
         try { // Register the driver
             Class.forName("org.postgresql.Driver");
