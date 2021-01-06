@@ -24,7 +24,8 @@ public class StartupServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("Get request received");
         //Set up a connection with the PostgreSQL database on Heroku
-        Connection conn = getConnectionPostgreSQL();
+        Database db=new Database();
+        Connection conn = db.setConnHerokuDB();
 
         //Set up the response content
         resp.setContentType("application/json");
@@ -51,6 +52,11 @@ public class StartupServlet extends HttpServlet {
             log.warning("Error in SQL query or sending response");
             e.printStackTrace();}
         log.info("Get response sent");
+        try {
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     public static String writeJsonBody(ResultSet rset) throws SQLException {
@@ -79,25 +85,4 @@ public class StartupServlet extends HttpServlet {
         return jsonString;
     }
 
-    public Connection getConnectionPostgreSQL() {
-        //Set up a connection with the PostgreSQL database on Heroku
-        String dbUrl = "jdbc:postgresql://ec2-54-75-199-252.eu-west-1.compute.amazonaws.com:5432/dasvo1tthb1a3g?password=22afccca3ddb51486bab2f43f044a0591f489bb18df77ac691835d453b24c9e9&sslmode=require&user=kbowqnjbtonlye";
-        try { // Register the driver
-            Class.forName("org.postgresql.Driver");
-        }
-        catch (Exception e) {
-            log.warning("Error registering drivers");
-            e.printStackTrace();
-        }
-
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection(dbUrl);
-        } catch (SQLException throwables) {
-            log.warning("Error in opening the connection");
-            throwables.printStackTrace();
-        }
-        log.info("Connection successfully opened");
-        return conn;
-    }
 }
