@@ -36,7 +36,7 @@ public class PatientsServlet extends HttpServlet {
         Patient p = g.fromJson(reqBody, Patient.class);
 
         Database db=new Database();
-        Connection conn = db.setConnHerokuDB();
+        Connection conn = db.setConnPrivate();
 
         try {
             //SQL query on the Database to retrieve information
