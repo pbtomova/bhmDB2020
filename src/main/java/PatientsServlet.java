@@ -11,6 +11,8 @@ import java.sql.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/** This servlet serves for adding patients to the remote sql database*/
+
 @WebServlet(urlPatterns = {"/patients"},loadOnStartup = 1)
 public class PatientsServlet extends HttpServlet {
     private static final Logger log = Logger.getLogger(Patient.class.getName());
