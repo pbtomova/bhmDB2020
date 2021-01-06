@@ -1,33 +1,50 @@
 //import java.time.LocalDate;
 //import java.time.LocalTime;
+import com.google.gson.annotations.SerializedName;
+
 import java.sql.Date;
 
-/** Patient is a class which contains all the data for one patient */
+/** Patient is a class which contains all the data for one patient
+ *  Shortened version for the servlet*/
 
 public class Patient {
-    // The following fields list patient's profile information
+    // The following fields list patient's profile
+    @SerializedName("name")
     private String name;
+    @SerializedName("hospID")
     private int hospID;
-    private Date DOB;
+    @SerializedName("DOB")
+    private Date DOB; // String for now, will figure out how to set it as a date
+    @SerializedName("timeOfBirth")
     private String timeOfBirth;
+    @SerializedName("weight")
     private double weight;
+    @SerializedName("gender")
     private String gender;
+    @SerializedName("motherName")
     private String motherName;
+    @SerializedName("fatherName")
     private String fatherName;
+    @SerializedName("contactNum")
     private String contactNum;
+    @SerializedName("condition")
     private String condition;   // stores additional details on pre-existing conditions/diseases
+    @SerializedName("healthIndex")
     private double healthIndex;
-    //private MonitoredParams param;
+    private MonitoredParams param;
 
-    // constructors
-    public Patient(String name) {
-        this.name = name;
-//        param = new MonitoredParams();
+    // constructor
+    public Patient(int hospID) {
+        this.hospID = hospID;
+        param = new MonitoredParams();
     }
 
     // getters and setters
     public String getName() {
         return name;
+    }
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Date getDOB() {
@@ -46,9 +63,6 @@ public class Patient {
 
     public int getHospID() {
         return hospID;
-    }
-    public void setHospID(int hospID) {
-        this.hospID = hospID;
     }
 
     public double getWeight() {
@@ -101,7 +115,4 @@ public class Patient {
         this.condition = condition;
     }
 
-    // Main functions
-    // set monitoredParams from data in text files
-    // public void graphPlotter()
 }

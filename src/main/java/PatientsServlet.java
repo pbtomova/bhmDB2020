@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Date;
+import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/patients"},loadOnStartup = 1)
 public class PatientsServlet extends HttpServlet {
@@ -16,8 +17,8 @@ public class PatientsServlet extends HttpServlet {
         resp.setContentType("application/json");
 
         String name="Gordon";
-        Patient p = new Patient(name);
-        p.setHospID(8);
+        Patient p = new Patient(8);
+        p.setName(name);
         p.setGender("male");
         p.setDOB(Date.valueOf("2020-01-01"));
 
@@ -27,5 +28,14 @@ public class PatientsServlet extends HttpServlet {
 
         resp.getWriter().write(jsonString);
     }
-    StartupServlet ss=new StartupServlet();
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String reqBody=req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        System.out.println(reqBody);
+        System.out.println("post request");
+        Gson g = new Gson();
+        Patient p = g.fromJson(reqBody, Patient.class);
+        System.out.println(p.getName());
+    }
 }

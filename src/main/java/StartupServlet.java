@@ -12,11 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+/** Servlet to request patients list */
 
-//TODO Change all System.out.println to something meaningful for the android app
+//TODO Change all System.out.println to something meaningful such as logger
 
-
-//Servlet to request patients list
 @WebServlet(urlPatterns = {"/startup"},loadOnStartup = 1)
 public class StartupServlet extends HttpServlet {
     private static final Logger log= Logger.getLogger(Patient.class.getName());
@@ -57,7 +56,6 @@ public class StartupServlet extends HttpServlet {
     public static String writeJsonBody(ResultSet rset) throws SQLException {
 
         //Check number of Json objects about to be sent
-        StringBuffer stringBuffer=new StringBuffer();
         List<String> patientsJson =new ArrayList<>();
         String body; //the body of the response containing comma separated Json objects
         while (rset.next()) {
@@ -70,9 +68,8 @@ public class StartupServlet extends HttpServlet {
     }
 
     public static String jsonConverter(ResultSet rset) throws SQLException {
-        String name=rset.getString("name");
-        Patient p = new Patient(name);
-        p.setHospID(rset.getInt("hospID"));
+        Patient p = new Patient(rset.getInt("hospID"));
+        p.setName(rset.getString("name"));
         p.setGender(rset.getString("gender"));
         p.setDOB(rset.getDate("dob"));
 
@@ -89,7 +86,7 @@ public class StartupServlet extends HttpServlet {
             Class.forName("org.postgresql.Driver");
         }
         catch (Exception e) {
-            System.out.println("Error in Registering Drivers");
+            log.warning("Error registering drivers");
             e.printStackTrace();
         }
 
@@ -97,7 +94,7 @@ public class StartupServlet extends HttpServlet {
         try {
             conn = DriverManager.getConnection(dbUrl);
         } catch (SQLException throwables) {
-            System.out.println("Error in opening the connection");
+            log.warning("Error in opening the connection");
             throwables.printStackTrace();
         }
         log.info("Connection successfully opened");
