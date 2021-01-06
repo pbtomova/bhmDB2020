@@ -3,6 +3,7 @@
 import com.google.gson.annotations.SerializedName;
 
 import java.sql.Date;
+import java.util.ArrayList;
 
 /** Patient is a class which contains all the data for one patient
  *  Shortened version for the servlet*/
@@ -32,6 +33,7 @@ public class Patient {
     @SerializedName("healthIndex")
     private double healthIndex;
     private MonitoredParams param;
+    private ArrayList<String> comments = new ArrayList<String>();
 
     // constructor
     public Patient(int hospID) {

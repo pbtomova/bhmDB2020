@@ -6,11 +6,9 @@ import org.mockito.MockitoAnnotations;
 
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.sql.*;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -35,7 +33,7 @@ public class TestStartupServlet {
         //Initialise the Servlet
         StartupServlet myServlet=new StartupServlet();
         //Json output corresponding to the ResultSet Values
-        String jsonString="{\"name\":\"Billy Jones\",\"hospID\":1,\"DOB\":\"Nov 21, 2020\",\"weight\":0.0,\"gender\":\"male\",\"healthIndex\":0.0,\"param\":{\"glucose\":[],\"lactate\":[],\"time\":[]}}";
+        String jsonString="{\"name\":\"Billy Jones\",\"hospID\":1,\"DOB\":\"Nov 21, 2020\",\"weight\":0.0,\"gender\":\"male\",\"healthIndex\":0.0,\"param\":{\"glucose\":[],\"lactate\":[],\"time\":[]},\"comments\":[]}";
         //Sample ResultSet values
         when(rset.getInt("hospID")).thenReturn(1);
         when(rset.getString("name")).thenReturn("Billy Jones");
@@ -61,7 +59,7 @@ public class TestStartupServlet {
         when(rset.next()).thenReturn(true,false);
 
         //Json output corresponding to the ResultSet Values
-        String jsonString="{\"name\":\"Billy Jones\",\"hospID\":1,\"DOB\":\"Nov 21, 2020\",\"weight\":0.0,\"gender\":\"male\",\"healthIndex\":0.0,\"param\":{\"glucose\":[],\"lactate\":[],\"time\":[]}}";
+        String jsonString="{\"name\":\"Billy Jones\",\"hospID\":1,\"DOB\":\"Nov 21, 2020\",\"weight\":0.0,\"gender\":\"male\",\"healthIndex\":0.0,\"param\":{\"glucose\":[],\"lactate\":[],\"time\":[]},\"comments\":[]}";
 
         String output=myServlet.writeJsonBody(rset);
 

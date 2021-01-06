@@ -19,6 +19,7 @@ public class PatientsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
 
+        //Sends Json object as response as retrofit client only accept json objects
         JsonObject message = new JsonObject();
         message.addProperty("message", "Request was completed");
 
@@ -31,6 +32,8 @@ public class PatientsServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("Post request is received");
+
+        //Retrieve patient object from request body
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         Gson g = new Gson();
         Patient p = g.fromJson(reqBody, Patient.class);
@@ -39,7 +42,7 @@ public class PatientsServlet extends HttpServlet {
         Connection conn = db.setConnHerokuDB();
 
         try {
-            //SQL query on the Database to retrieve information
+            //SQL update to insert a new patient
             String sqlStr = "INSERT INTO patients (hospID,gender,name,dob) VALUES (?,?,?,?);";
             PreparedStatement preparedStatement = conn.prepareStatement(sqlStr);
             preparedStatement.setInt (1, p.getHospID());
@@ -51,7 +54,6 @@ public class PatientsServlet extends HttpServlet {
             doGet(req, resp);
         } catch(SQLException e){
             requestFailed(resp);
-            e.printStackTrace();
         }
     }
 

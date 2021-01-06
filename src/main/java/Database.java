@@ -3,6 +3,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
+/**This class serves for easier connection to the database,
+ * and quick switch from local to heroku sql database*/
+
 public class Database {
     private Connection connPrivate;
     private Connection connHerokuDB;
