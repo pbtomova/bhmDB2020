@@ -32,13 +32,11 @@ public class Patient {
     private String condition;   // stores additional details on pre-existing conditions/diseases
     @SerializedName("healthIndex")
     private double healthIndex;
-    private MonitoredParams param;
     private ArrayList<String> comments = new ArrayList<String>();
 
     // constructor
     public Patient(int hospID) {
         this.hospID = hospID;
-        param = new MonitoredParams();
     }
 
     // getters and setters

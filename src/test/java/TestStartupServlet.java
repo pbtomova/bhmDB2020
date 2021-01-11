@@ -33,7 +33,7 @@ public class TestStartupServlet {
         //Initialise the Servlet
         StartupServlet myServlet=new StartupServlet();
         //Json output corresponding to the ResultSet Values
-        String jsonString="{\"name\":\"Billy Jones\",\"hospID\":1,\"DOB\":\"Nov 21, 2020\",\"weight\":0.0,\"gender\":\"male\",\"healthIndex\":0.0,\"param\":{\"glucose\":[],\"lactate\":[],\"time\":[]},\"comments\":[]}";
+        String jsonString="{\"name\":\"Billy Jones\",\"hospID\":1,\"DOB\":\"Nov 21, 2020\",\"weight\":0.0,\"gender\":\"male\",\"healthIndex\":0.0,\"comments\":[]}";
         //Sample ResultSet values
         when(rset.getInt("hospID")).thenReturn(1);
         when(rset.getString("name")).thenReturn("Billy Jones");
@@ -59,7 +59,8 @@ public class TestStartupServlet {
         when(rset.next()).thenReturn(true,false);
 
         //Json output corresponding to the ResultSet Values
-        String jsonString="{\"name\":\"Billy Jones\",\"hospID\":1,\"DOB\":\"Nov 21, 2020\",\"weight\":0.0,\"gender\":\"male\",\"healthIndex\":0.0,\"param\":{\"glucose\":[],\"lactate\":[],\"time\":[]},\"comments\":[]}";
+        String jsonString="{\"name\":\"Billy Jones\",\"hospID\":1,\"DOB\":\"Nov 21, 2020\",\"weight\":0.0,\"gender\":\"male\",\"healthIndex\":0.0,\"comments\":[]}";
+
 
         String output=myServlet.writeJsonBody(rset);
 
@@ -83,11 +84,26 @@ public class TestStartupServlet {
 //    @Test
 //    public void testDoGet() throws IOException, ServletException, SQLException {
 //        String jsonString="[{\"name\":\"Billy Jones\",\"hospID\":1,\"DOB\":\"Nov 21, 2020\",\"weight\":0.0,\"gender\":\"male\",\"healthIndex\":0.0,\"param\":{\"glucose\":[],\"lactate\":[],\"time\":[]}}]";
+//
+//        //Writer to catch request output
 //        StringWriter stringWriter=new StringWriter();
 //        PrintWriter printWriter=new PrintWriter(stringWriter);
-//        when(response.getWriter()).thenReturn(printWriter);
 //
 //        StartupServlet myServlet=new StartupServlet();
+//        //Mock ResultSet
+//        String sqlStr = "SELECT name,hospID,gender,dob FROM patients;";
+//        when(s.executeQuery(sqlStr)).thenReturn(rset);
+//        //Sample ResultSet values
+//        when(rset.getInt("hospID")).thenReturn(1);
+//        when(rset.getString("name")).thenReturn("Billy Jones");
+//        when(rset.getDate("dob")).thenReturn(Date.valueOf("2020-11-21"));
+//        when(rset.getString("gender")).thenReturn("male");
+//        when(rset.next()).thenReturn(true,false);
+//
+////        when(myServlet.writeJsonBody(rset)).thenReturn(jsonString);
+//
+//        when (response.getWriter()).thenReturn(printWriter);
+//
 //        myServlet.doGet(request,response);
 //
 //        String output=stringWriter.getBuffer().toString();

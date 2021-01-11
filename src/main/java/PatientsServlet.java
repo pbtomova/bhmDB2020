@@ -42,7 +42,7 @@ public class PatientsServlet extends HttpServlet {
 
         //Set up connection with remote database
         Database db=new Database();
-        Connection conn = db.setConnHerokuDB();
+        Connection conn=db.setConnHerokuDB();
 
         try {
             //SQL update to insert a new patient
@@ -57,6 +57,7 @@ public class PatientsServlet extends HttpServlet {
             doGet(req, resp);
         } catch(SQLException e){
             requestFailed(resp);
+            log.warning("Delete Query failed because: "+e.getMessage());
         }
     }
 
@@ -72,7 +73,6 @@ public class PatientsServlet extends HttpServlet {
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         int hospID=0;
         hospID=Integer.parseInt(reqBody);
-        log.info("id: "+hospID);
         if (hospID==0){
             log.warning("Request didn't contain a valid hospID");
             requestFailed(resp);
