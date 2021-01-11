@@ -40,6 +40,7 @@ public class PatientsServlet extends HttpServlet {
         Gson g = new Gson();
         Patient p = g.fromJson(reqBody, Patient.class);
 
+        //Set up connection with remote database
         Database db=new Database();
         Connection conn = db.setConnHerokuDB();
 
@@ -59,6 +60,38 @@ public class PatientsServlet extends HttpServlet {
         }
     }
 
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        log.info("DELETE request is received");
+
+        //Retrieve patient hospital id from request body
+        Database db=new Database();
+        Connection conn = db.setConnHerokuDB();
+
+        //Retrieve patient hospital id from request body
+        String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        int hospID=0;
+        hospID=Integer.parseInt(reqBody);
+        log.info("id: "+hospID);
+        if (hospID==0){
+            log.warning("Request didn't contain a valid hospID");
+            requestFailed(resp);
+        }else {
+            try {
+                String sqlStr = "DELETE FROM patients WHERE hospID=?;";
+                PreparedStatement preparedStatement = conn.prepareStatement(sqlStr);
+                preparedStatement.setInt(1, hospID);
+                preparedStatement.executeUpdate();
+                preparedStatement.close();
+                log.info("Patient with hospID:"+hospID+"was deleted");
+                doGet(req, resp);
+            } catch (Exception e) {
+                log.warning("SQL Query failed");
+                requestFailed(resp);
+            }
+        }
+    }
+
     private void requestFailed(HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
         JsonObject message = new JsonObject();
@@ -68,4 +101,5 @@ public class PatientsServlet extends HttpServlet {
         String jsonString = gson.toJson(message);
         resp.getWriter().write(jsonString);
     }
+
 }

@@ -29,7 +29,7 @@ public class Database {
             log.warning("Error in opening the connection");
             throwables.printStackTrace();
         }
-        log.info("Connection successfully opened");
+        log.info("Database connection successfully opened");
         return connHerokuDB;
     }
 
