@@ -26,7 +26,6 @@ public class TestPatientsServlet {
     HttpServletRequest request;
     @Mock
     HttpServletResponse response;
-    @Mock Database db;
     @Before
     public void setUp() throws Exception{
         MockitoAnnotations.openMocks(this);

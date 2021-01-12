@@ -1,7 +1,6 @@
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +17,7 @@ public class PatientsServlet extends HttpServlet {
     private static final Logger log = Logger.getLogger(Patient.class.getName());
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
 
         //Sends Json object as response as retrofit client only accept json objects
@@ -32,7 +31,7 @@ public class PatientsServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         log.info("Post request is received");
 
         //Retrieve patient object from request body
@@ -62,7 +61,7 @@ public class PatientsServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
         log.info("DELETE request is received");
 
         //Retrieve patient hospital id from request body

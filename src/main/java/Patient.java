@@ -34,7 +34,7 @@ public class Patient {
     private double healthIndex;
     private ArrayList<String> comments = new ArrayList<String>();
 
-    // constructor
+    // Constructor
     public Patient(int hospID) {
         this.hospID = hospID;
     }
@@ -115,4 +115,19 @@ public class Patient {
         this.condition = condition;
     }
 
+    // Main functions
+    public void addComment(String comment){
+        comments.add(comment);
+    }
+
+    public int getNumberOfComment(){
+        return comments.size();
+    }
+
+    public String getCommentByIndex(int index){
+        if(index < comments.size()){
+            return comments.get(index);
+        }
+        else return "";
+    }
 }
