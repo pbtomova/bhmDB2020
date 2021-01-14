@@ -1,1 +1,4 @@
 /build/
+
+#ignore README file
+README.md
