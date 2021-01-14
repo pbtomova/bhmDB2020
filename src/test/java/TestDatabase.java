@@ -4,7 +4,7 @@ import org.junit.Test;
 import java.sql.Connection;
 
 public class TestDatabase {
-        @Test
+    @Test
     public void testConnectionNotNull() {
         Database db=new Database();
         Connection conn=db.setConnHerokuDB();

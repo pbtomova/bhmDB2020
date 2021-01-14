@@ -10,7 +10,10 @@ import java.sql.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-/** This servlet serves for adding patients to the remote sql database*/
+/** This servlet serves for adding and deleting patients on the remote sql database */
+
+//TODO Add more content to requestFailed response so that the client can see the reasons for the error
+//TODO Add security measures to doPost and doDelete
 
 @WebServlet(urlPatterns = {"/patients"},loadOnStartup = 1)
 public class PatientsServlet extends HttpServlet {
@@ -28,18 +31,20 @@ public class PatientsServlet extends HttpServlet {
         Gson gson = new Gson();
         String jsonString = gson.toJson(message);
         resp.getWriter().write(jsonString);
+
+        log.info("Request was completed");
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        log.info("Post request is received");
+        log.info("Post request received");
 
         //Retrieve patient object from request body
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         Gson g = new Gson();
         Patient p = g.fromJson(reqBody, Patient.class);
 
-        //Set up connection with remote database
+        //Set up connection with the remote database
         Database db=new Database();
         Connection conn=db.setConnHerokuDB();
 
@@ -53,8 +58,10 @@ public class PatientsServlet extends HttpServlet {
             preparedStatement.setDate(4, p.getDOB());
             preparedStatement.executeUpdate();
             preparedStatement.close();
+            //Send back a positive response
             doGet(req, resp);
         } catch(SQLException e){
+            //Send back a negative response
             requestFailed(resp);
             log.warning("Delete Query failed because: "+e.getMessage());
         }
@@ -62,7 +69,7 @@ public class PatientsServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
-        log.info("DELETE request is received");
+        log.info("Delete request received");
 
         //Retrieve patient hospital id from request body
         Database db=new Database();
@@ -72,25 +79,28 @@ public class PatientsServlet extends HttpServlet {
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         int hospID=0;
         hospID=Integer.parseInt(reqBody);
+
         if (hospID==0){
             log.warning("Request didn't contain a valid hospID");
             requestFailed(resp);
         }else {
             try {
+                //Send Delete SQL Query
                 String sqlStr = "DELETE FROM patients WHERE hospID=?;";
                 PreparedStatement preparedStatement = conn.prepareStatement(sqlStr);
                 preparedStatement.setInt(1, hospID);
                 preparedStatement.executeUpdate();
                 preparedStatement.close();
-                log.info("Patient with hospID:"+hospID+"was deleted");
+                log.info("Patient with hospID: "+hospID+" was deleted");
                 doGet(req, resp);
             } catch (Exception e) {
-                log.warning("SQL Query failed");
+                log.warning("SQL Query failed: "+e.getMessage());
                 requestFailed(resp);
             }
         }
     }
 
+    //Send a json response to the client to inform when a request has failed
     private void requestFailed(HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
         JsonObject message = new JsonObject();
