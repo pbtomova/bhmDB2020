@@ -1,1 +1,5 @@
 /build/
+/pictures/
+
+#ignore README file
+README.md
