@@ -105,6 +105,7 @@ public class TestPatientsServlet {
 
         Assert.assertThat(jsonResponse,is(anyOf(equalTo("Request was completed"),equalTo("Request failed"))));
     }
+
     @After
     public void deleteTestPatient() throws IOException {
         // Set up the body data
@@ -122,11 +123,12 @@ public class TestPatientsServlet {
             conn.setDoOutput(true);
             // Write the body of the request
             try (OutputStream outputStream = conn.getOutputStream()) {
-                outputStream.write(body, 0, body.length);
+                outputStream.write(body);
             }
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
+            bufferedReader.close();
         }
         catch(Exception e){
-            e.printStackTrace();
         }
     }
 }

@@ -31,13 +31,10 @@ public class PatientsServlet extends HttpServlet {
         Gson gson = new Gson();
         String jsonString = gson.toJson(message);
         resp.getWriter().write(jsonString);
-
-        log.info("Request was completed");
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        log.info("Post request received");
 
         //Retrieve patient object from request body
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
@@ -60,6 +57,7 @@ public class PatientsServlet extends HttpServlet {
             preparedStatement.close();
             //Send back a positive response
             doGet(req, resp);
+            log.info("Patient with hospID: "+p.getHospID()+" was added");
         } catch(SQLException e){
             //Send back a negative response
             requestFailed(resp);
@@ -74,7 +72,6 @@ public class PatientsServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
-        log.info("Delete request received");
 
         //Retrieve patient hospital id from request body
         Database db=new Database();

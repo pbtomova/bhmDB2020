@@ -3,6 +3,7 @@
 import com.google.gson.annotations.SerializedName;
 
 import java.sql.Date;
+import java.sql.Time;
 import java.util.ArrayList;
 
 /** Patient is a class which contains all the data for one patient
@@ -34,7 +35,7 @@ public class Patient {
     private double healthIndex;
     private ArrayList<String> comments = new ArrayList<String>();
 
-    // Constructor
+    // constructor
     public Patient(int hospID) {
         this.hospID = hospID;
     }
@@ -58,6 +59,7 @@ public class Patient {
         return gender;
     }
     public void setGender(String gender) {
+        gender = gender.toLowerCase();  // ensures that gender is written in lowercase for uniformity
         this.gender = gender;
     }
 

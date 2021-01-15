@@ -20,8 +20,6 @@ public class StartupServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        log.info("Get request received");
-
         //Set up the response content
         resp.setContentType("application/json");
         // Get a writer to send the response messages into the network socket
@@ -29,6 +27,7 @@ public class StartupServlet extends HttpServlet {
         // Square bracket denoting beginning of a Json Array of Patients
         printWriter.write("[");
         try {
+            //Execute Select SQL Query
             ResultSet rset = sqlSelectQuery();
             //Parse the response of the SQL query into Patient objects and convert them into a Json string
             String body = writeJsonBody(rset);
@@ -40,7 +39,7 @@ public class StartupServlet extends HttpServlet {
         //End of Json array
         printWriter.write("]");
         printWriter.close();
-        log.info("Get response sent");
+        log.info("The list of patients was sent");
     }
 
     private void requestFailed(HttpServletResponse resp) throws IOException {
