@@ -65,6 +65,11 @@ public class PatientsServlet extends HttpServlet {
             requestFailed(resp);
             log.warning("Delete Query failed because: "+e.getMessage());
         }
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            log.warning(e.getMessage());
+        }
     }
 
     @Override
@@ -97,6 +102,11 @@ public class PatientsServlet extends HttpServlet {
                 log.warning("SQL Query failed: "+e.getMessage());
                 requestFailed(resp);
             }
+        }
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            log.warning(e.getMessage());
         }
     }
 

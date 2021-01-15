@@ -1,6 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.logging.Logger;
 
 /**This class serves for connection to the database,
@@ -49,4 +47,5 @@ public class Database {
         log.info("Connection successfully opened");
         return connPrivate;
     }
+
 }
