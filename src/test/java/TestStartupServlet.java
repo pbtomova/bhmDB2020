@@ -86,5 +86,4 @@ public class TestStartupServlet {
 
         verify(response).setContentType("application/json");
     }
-
 }

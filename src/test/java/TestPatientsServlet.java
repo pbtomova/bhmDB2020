@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -13,6 +14,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 
 import static org.hamcrest.Matchers.*;
@@ -68,20 +72,15 @@ public class TestPatientsServlet {
         PrintWriter printWriter=new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(printWriter);
 
-
         myServlet.doPost(request,response);
-
         //Receive output as jsonObject
         String output=stringWriter.getBuffer().toString();
         String jsonResponse=g.fromJson(output,JsonObject.class).get("message").getAsString();
 
-        System.out.println(jsonResponse);
 
         Assert.assertThat(jsonResponse,is(anyOf(equalTo("Request was completed"),equalTo("Request failed"))));
         verify(response).setContentType("application/json");
     }
-
-    @AfterEach
     @Test
     public void testDoDelete() throws IOException {
         PatientsServlet myServlet=new PatientsServlet();
@@ -105,5 +104,29 @@ public class TestPatientsServlet {
         String jsonResponse=g.fromJson(output,JsonObject.class).get("message").getAsString();
 
         Assert.assertThat(jsonResponse,is(anyOf(equalTo("Request was completed"),equalTo("Request failed"))));
+    }
+    @After
+    public void deleteTestPatient() throws IOException {
+        // Set up the body data
+        try{
+            String message = "9999";
+            byte[] body = message.getBytes(StandardCharsets.UTF_8);
+            URL myURL = new URL("https://bhmdb2020.herokuapp.com/patients");
+            HttpURLConnection conn = null;
+            conn = (HttpURLConnection) myURL.openConnection();
+            // Set up the header
+            conn.setRequestMethod("DELETE");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setRequestProperty("charset", "utf-8");
+            conn.setRequestProperty("Content-Length", Integer.toString(body.length));
+            conn.setDoOutput(true);
+            // Write the body of the request
+            try (OutputStream outputStream = conn.getOutputStream()) {
+                outputStream.write(body, 0, body.length);
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }
