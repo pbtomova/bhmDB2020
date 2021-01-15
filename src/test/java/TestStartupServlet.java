@@ -27,12 +27,15 @@ public class TestStartupServlet {
     HttpServletResponse response;
     @Mock
     ResultSet rset;
+    @Mock
+    Database db;
     @Before
-    public void setUp() throws Exception{
+    public void setUp(){
         MockitoAnnotations.openMocks(this);
     }
+
     @Test
-    public void testResultSetToJson() throws IOException,SQLException {
+    public void testResultSetToJson() throws SQLException {
         //Initialise the Servlet
         StartupServlet myServlet=new StartupServlet();
         //Json output corresponding to the ResultSet Values
@@ -50,7 +53,7 @@ public class TestStartupServlet {
     }
 
     @Test
-    public void testWriteJsonBody() throws IOException,SQLException {
+    public void testWriteJsonBody() throws SQLException {
         //Initialise the Servlet
         StartupServlet myServlet=new StartupServlet();
 
@@ -72,7 +75,7 @@ public class TestStartupServlet {
 
     @Test
     //Test if the response content type is set to application/JSON
-    public void testGetResponseContentType() throws ServletException, IOException, SQLException {
+    public void testResponseContentType() throws  IOException {
         StartupServlet myServlet=new StartupServlet();
 
         StringWriter stringWriter=new StringWriter();
@@ -84,40 +87,4 @@ public class TestStartupServlet {
         verify(response).setContentType("application/json");
     }
 
-//    @Test
-//    public void testDoGet() throws IOException, ServletException, SQLException {
-//        String jsonString="[{\"name\":\"Billy Jones\",\"hospID\":1,\"DOB\":\"Nov 21, 2020\",\"weight\":0.0,\"gender\":\"male\",\"healthIndex\":0.0,\"param\":{\"glucose\":[],\"lactate\":[],\"time\":[]}},";
-//
-//        //Sample ResultSet values
-//        when(rset.getInt("hospID")).thenReturn(1);
-//        when(rset.getString("name")).thenReturn("Billy Jones");
-//        when(rset.getDate("dob")).thenReturn(Date.valueOf("2020-11-21"));
-//        when(rset.getString("gender")).thenReturn("male");
-//        when(rset.next()).thenReturn(true,false);
-//
-//        Database localMockDatabase = Mockito.mock(Database.class);
-//        Connection mockConn=Mockito.mock(Connection.class);
-//        Statement mockStatement=Mockito.mock(Statement.class);
-//        String sqlString="SELECT name,hospID,gender,dob FROM patients;";
-//
-//        Mockito.when(localMockDatabase.setConnHerokuDB()).thenReturn(mockConn);
-//        when(mockConn.createStatement()).thenReturn(mockStatement);
-//        when(mockStatement.executeQuery(sqlString)).thenReturn(rset);
-//
-//
-//        //Writer to catch request output
-//        StringWriter stringWriter=new StringWriter();
-//        PrintWriter printWriter=new PrintWriter(stringWriter);
-//
-//        StartupServlet myServlet=new StartupServlet();
-//
-////        when(myServlet.writeJsonBody(rset)).thenReturn(jsonString);
-//
-//        when (response.getWriter()).thenReturn(printWriter);
-//
-//        myServlet.doGet(request,response);
-//
-//        String output=stringWriter.getBuffer().toString();
-//        Assert.assertThat(output,startsWith(jsonString));
-//    }
 }

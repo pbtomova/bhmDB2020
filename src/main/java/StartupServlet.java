@@ -1,4 +1,5 @@
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,43 +21,36 @@ public class StartupServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         log.info("Get request received");
-        //Set up a connection with the PostgreSQL database on Heroku
-        Database db=new Database();
-        Connection conn = db.setConnHerokuDB();
 
         //Set up the response content
         resp.setContentType("application/json");
         // Get a writer to send the response messages into the network socket
         PrintWriter printWriter=resp.getWriter();
-
-        //Send all patients using JSON format
+        // Square bracket denoting beginning of a Json Array of Patients
+        printWriter.write("[");
         try {
-            //SQL query on the Database to retrieve information
-            Statement s = conn.createStatement();
-            String sqlStr = "SELECT name,hospID,gender,dob FROM patients;";
-            ResultSet rset = s.executeQuery(sqlStr);
-
-            // Square bracket denoting beginning of a Json Array of Patients
-            printWriter.write("[");
+            ResultSet rset = sqlSelectQuery();
             //Parse the response of the SQL query into Patient objects and convert them into a Json string
             String body = writeJsonBody(rset);
             printWriter.write(body);
-            //End of Json array
-            printWriter.write("]");
-
-            printWriter.close();
             rset.close();
-            s.close();
+        } catch (SQLException throwables) {
+            requestFailed(resp);
         }
-        catch(SQLException e){
-            log.warning("Error in SQL query or sending response: "+e.getMessage());
-        }
+        //End of Json array
+        printWriter.write("]");
+        printWriter.close();
         log.info("Get response sent");
-        try {
-            conn.close();
-        } catch (SQLException e) {
-            log.warning("Connection couldn't be closed" + e.getMessage());
-        }
+    }
+
+    private void requestFailed(HttpServletResponse resp) throws IOException {
+        resp.setContentType("application/json");
+        JsonObject message = new JsonObject();
+        message.addProperty("message", "Request failed");
+        //Convert to JSON
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(message);
+        resp.getWriter().write(jsonString);
     }
 
     //Combines multiple json String into a comma separated list (in the form of a string)
@@ -88,4 +82,16 @@ public class StartupServlet extends HttpServlet {
         return jsonString;
     }
 
+    public ResultSet sqlSelectQuery() throws SQLException {
+        //Connection to the database
+        Database db=new Database();
+        Connection conn= db.setConnHerokuDB();
+        //SQL query on the Database to retrieve information
+        Statement s = conn.createStatement();
+        String sqlStr = "SELECT name,hospID,gender,dob FROM patients;";
+        ResultSet rset = s.executeQuery(sqlStr);
+        s.close();
+        conn.close();
+        return rset;
+    }
 }

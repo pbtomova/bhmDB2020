@@ -26,6 +26,9 @@ task stage(dependsOn: ['build', 'clean'])
 build.mustRunAfter clean
 
 dependencies {
+    implementation 'org.junit.jupiter:junit-jupiter:5.4.2'
+    implementation 'org.junit.jupiter:junit-jupiter:5.4.2'
+
     // to include the servlet libraries
     providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
     runtimeOnly group: 'org.postgresql', name: 'postgresql', version: '42.2.18'
